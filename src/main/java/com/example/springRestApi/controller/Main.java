@@ -4,10 +4,9 @@ package com.example.springRestApi.controller;
 import com.example.springRestApi.model.Product;
 import com.example.springRestApi.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RequestMapping("/rest/wirgroup")
 @RestController
@@ -27,6 +26,38 @@ public class Main {
     public @ResponseBody Iterable<Product> getAllUsers() {
         // This returns a JSON or XML with the users
         return productRepository.findAll();
+    }
+
+    @GetMapping(path="/add") // Map ONLY GET Requests
+    public @ResponseBody String addNewUser (@RequestParam String name) {
+        // @ResponseBody means the returned String is the response, not a view name
+        // @RequestParam means it is a parameter from the GET or POST request
+
+        Product n = new Product();
+        n.setName(name);
+        productRepository.save(n);
+        return "Saved";
+    }
+
+    @GetMapping(path="/update") // Map ONLY GET Requests
+    public @ResponseBody String deleteUser (@RequestParam int id, @RequestParam String name) {
+        // @ResponseBody means the returned String is the response, not a view name
+        // @RequestParam means it is a parameter from the GET or POST request
+
+        Product n = productRepository.findById(id).get();
+        n.setName(name);
+        productRepository.save(n);
+
+        return "update";
+    }
+
+    @GetMapping(path="/delete") // Map ONLY GET Requests
+    public @ResponseBody String deleteUser (@RequestParam int id) {
+        // @ResponseBody means the returned String is the response, not a view name
+        // @RequestParam means it is a parameter from the GET or POST request
+
+        productRepository.deleteById(id);
+        return "deleted";
     }
 
 }
