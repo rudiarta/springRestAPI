@@ -4,6 +4,7 @@ package com.example.springRestApi.controller;
 import com.example.springRestApi.model.Product;
 import com.example.springRestApi.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -22,6 +23,7 @@ public class Main {
         return "Hello wirgroup";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path="/all")
     public @ResponseBody Iterable<Product> getAllUsers() {
         // This returns a JSON or XML with the users
