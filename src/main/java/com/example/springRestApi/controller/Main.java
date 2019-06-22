@@ -5,8 +5,13 @@ import com.example.springRestApi.model.Product;
 import com.example.springRestApi.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @RequestMapping("/rest/wirgroup")
@@ -23,7 +28,7 @@ public class Main {
         return "Hello wirgroup";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping(path="/all")
     public @ResponseBody Iterable<Product> getAllUsers() {
         // This returns a JSON or XML with the users
@@ -51,6 +56,15 @@ public class Main {
         productRepository.save(n);
 
         return "update";
+    }
+
+    @RequestMapping(value="/logout", method = RequestMethod.GET)
+    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null){
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "logout success";//You can redirect wherever you want, but generally it's a good practice to show login screen again.
     }
 
     @GetMapping(path="/delete") // Map ONLY GET Requests
